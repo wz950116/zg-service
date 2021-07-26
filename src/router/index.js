@@ -34,6 +34,30 @@ const routes = [
     meta: {
       name: '公共服务'
     }
+  },
+  {
+    path: '/supervision-management',
+    name: 'supervision-management',
+    component: () => import('@/views/supervision-management/supervision-management.vue'),
+    meta: {
+      name: '监督管理'
+    }
+  },
+  {
+    path: '/comprehensive-evaluation',
+    name: 'comprehensive-evaluation',
+    component: () => import('@/views/comprehensive-evaluation/comprehensive-evaluation.vue'),
+    meta: {
+      name: '综合评价'
+    }
+  },
+  {
+    path: '/integrated-law',
+    name: 'integrated-law',
+    component: () => import('@/views/integrated-law/integrated-law.vue'),
+    meta: {
+      name: '长三角一体化执法'
+    }
   }
 ]
 

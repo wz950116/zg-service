@@ -7,16 +7,7 @@
         <h1>综合运行概览</h1>
         <div class="list">
           <div v-for="item in integratedOperation" :key="item.name" class="list-item">
-            <div class="left">
-              <img :src="item.icon" alt="" />
-            </div>
-            <div class="right">
-              <div class="name">{{ item.name }}</div>
-              <div :class="['value', { 'warning': item.error }]">
-                <span>{{ item.value }}</span>
-                <span class="unit">{{ item.unit }}</span>
-              </div>
-            </div>
+            <icon-info-show :item="item"></icon-info-show>
           </div>
         </div>
       </div>
@@ -93,27 +84,9 @@
         <h1>运行事件</h1>
         <div class="content">
           <div class="statistics">
-            <div class="create-count">
-              <div class="value">
-                <span class="number">3626</span>
-                <span class="unit">件</span>
-              </div>
-              <div class="name">立案总量</div>
-            </div>
-            <div class="close-count">
-              <div class="value">
-                <span class="number">2689</span>
-                <span class="unit">件</span>
-              </div>
-              <div class="name">办结总量</div>
-            </div>
-            <div class="emergency">
-              <div class="value">
-                <span class="number">35</span>
-                <span class="unit">件</span>
-              </div>
-              <div class="name">突发事件</div>
-            </div>
+            <label-value-show label="立案总量" value="3626" unit="件"></label-value-show>
+            <label-value-show label="办结总量" value="2689" unit="件"></label-value-show>
+            <label-value-show label="突发事件" value="35" unit="件"></label-value-show>
           </div>
           <div ref="pieRunningEvent" class="pie-container"></div>
         </div>
@@ -123,16 +96,7 @@
         <h1>城市服务</h1>
         <div class="list">
           <div v-for="item in cityService" :key="item.name" class="list-item">
-            <div class="left">
-              <img :src="item.icon" alt="" />
-            </div>
-            <div class="right">
-              <div class="name">{{ item.name }}</div>
-              <div :class="['value', { 'warning': item.error }]">
-                <span>{{ item.value }}</span>
-                <span class="unit">{{ item.unit }}</span>
-              </div>
-            </div>
+            <icon-info-show :item="item"></icon-info-show>
           </div>
         </div>
       </div>
@@ -152,16 +116,16 @@
       <router-link to="/public-service">
         <img class="banner-1" src="../../common/image/general-view/banner-1.png" alt="">
       </router-link>
-      <router-link to="/">
+      <router-link to="/supervision-management">
         <img class="banner-2" src="../../common/image/general-view/banner-2.png" alt="">
       </router-link>
       <router-link to="/business-guide">
         <img class="banner-3" src="../../common/image/general-view/banner-3.png" alt="">
       </router-link>
-      <router-link to="/">
+      <router-link to="/integrated-law">
         <img class="banner-4" src="../../common/image/general-view/banner-4.png" alt="">
       </router-link>
-      <router-link to="/">
+      <router-link to="/comprehensive-evaluation">
         <img class="banner-5" src="../../common/image/general-view/banner-5.png" alt="">
       </router-link>
     </div>
@@ -170,16 +134,6 @@
 
 <script>
 import { pieRunEvent } from '@/common/echarts/general-view'
-import integratedOperation1 from '@/common/image/general-view/integrated-operation-1.png'
-import integratedOperation2 from '@/common/image/general-view/integrated-operation-2.png'
-import integratedOperation3 from '@/common/image/general-view/integrated-operation-3.png'
-import integratedOperation4 from '@/common/image/general-view/integrated-operation-4.png'
-import integratedOperation5 from '@/common/image/general-view/integrated-operation-5.png'
-import integratedOperation6 from '@/common/image/general-view/integrated-operation-6.png'
-import integratedOperation7 from '@/common/image/general-view/integrated-operation-7.png'
-import integratedOperation8 from '@/common/image/general-view/integrated-operation-8.png'
-import integratedOperation9 from '@/common/image/general-view/integrated-operation-9.png'
-import integratedOperation10 from '@/common/image/general-view/integrated-operation-10.png'
 export default {
   data() {
     return {
@@ -188,38 +142,38 @@ export default {
           name: '事件按时处置率',
           value: '96.5',
           unit: '%',
-          icon: integratedOperation2,
+          icon: 'integratedOperation2',
           error: true
         },
         {
           name: '停车泊位占有率',
           value: '95.8',
           unit: '%',
-          icon: integratedOperation7
+          icon: 'integratedOperation7'
         },
         {
           name: '生活垃圾',
           value: '34',
           unit: '万吨',
-          icon: integratedOperation9
+          icon: 'integratedOperation9'
         },
         {
           name: '污水处理量',
           value: '34',
           unit: '亿m³',
-          icon: integratedOperation5
+          icon: 'integratedOperation5'
         },
         {
           name: '供水量',
           value: '38',
           unit: '亿m³',
-          icon: integratedOperation3
+          icon: 'integratedOperation3'
         },
         {
           name: '燃气供应量',
           value: '38',
           unit: '亿m³',
-          icon: integratedOperation4
+          icon: 'integratedOperation4'
         }
       ],
       cityManagement: [{
@@ -266,22 +220,22 @@ export default {
         name: '停车管理',
         value: '1000',
         unit: '个',
-        icon: integratedOperation1
+        icon: 'integratedOperation1'
       }, {
         name: '公厕',
         value: '2078',
         unit: '座 ',
-        icon: integratedOperation8
+        icon: 'integratedOperation8'
       }, {
         name: '城市公园',
         value: '38',
         unit: '座',
-        icon: integratedOperation10
+        icon: 'integratedOperation10'
       }, {
         name: '绿道',
         value: '38',
         unit: '座',
-        icon: integratedOperation6
+        icon: 'integratedOperation6'
       }],
       runningReportData: new Array(6)
     }
@@ -367,12 +321,6 @@ export default {
 }
 </script>
 
-<style>
-body {
-  background: #000037 url('../../common/image/public/bg.png') no-repeat center;
-  background-size: cover;
-}
-</style>
 <style lang="scss" scoped>
 .general-view {
   display: flex;
@@ -380,26 +328,27 @@ body {
   padding: 0 25px 39px;
   margin-top: 107px;
 
+  h1 {
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, #d8f4fc 20%, #25a4ff 89%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 24px;
+    font-family: Fontquan, Fontquan-Regular;
+    font-weight: 400;
+    color: #44caff;
+    line-height: 36px;
+    letter-spacing: 3px;
+    text-shadow: 0px 0px 20px rgba(0, 152, 255, 0.8);
+  }
+
   .left-content {
     width: 460px;
     height: 934px;
     padding: 29px;
     background: url('../../common/image/public/bg-border_1.png') no-repeat center;
     background-size: cover;
-
-    h1 {
-      margin-bottom: 20px;
-      background: linear-gradient(180deg, #d8f4fc 20%, #25a4ff 89%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 24px;
-      font-family: Fontquan, Fontquan-Regular;
-      font-weight: 400;
-      color: #44caff;
-      line-height: 36px;
-      letter-spacing: 3px;
-      text-shadow: 0px 0px 20px rgba(0, 152, 255, 0.8);
-    }
+    overflow-y: auto;
 
     .integrated-operation {
       .list {
@@ -684,20 +633,7 @@ body {
     padding: 29px;
     background: url('../../common/image/public/bg-border_1.png') no-repeat center;
     background-size: cover;
-
-    h1 {
-      margin-bottom: 20px;
-      background: linear-gradient(180deg, #d8f4fc 20%, #25a4ff 89%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 24px;
-      font-family: Fontquan, Fontquan-Regular;
-      font-weight: 400;
-      color: #44caff;
-      line-height: 36px;
-      letter-spacing: 3px;
-      text-shadow: 0px 0px 20px rgba(0, 152, 255, 0.8);
-    }
+    overflow-y: auto;
 
     .running-event {
       .content {
@@ -753,50 +689,6 @@ body {
           justify-content: space-between;
           width: 50%;
           margin-bottom: 18px;
-          .left {
-            width: 44px;
-            height: 44px;
-            margin-right: 22px;
-            img {
-              display: block;
-              width: 100%;
-              height: 100%;
-            }
-          }
-          .right {
-            position: relative;
-            flex: 1;
-            line-height: 23px;
-            .name {
-              font-size: 14px;
-              font-family: PingFangSC, PingFangSC-Regular;
-              font-weight: 400;
-              color: #3a9eff;
-            }
-            .value {
-              font-size: 16px;
-              font-family: Michroma, Michroma-Regular;
-              font-weight: 400;
-              text-align: left;
-              color: #ffffff;
-              &.warning {
-                color: #ff4f5c;
-              }
-              .unit {
-                font-size: 12px;
-                font-family: PingFangSC, PingFangSC-Regular;
-                margin-left: 5px;
-              }
-            }
-            &::before {
-              position: absolute;
-              left: -10px;
-              top: 8px;
-              content: '';
-              border: 4px solid transparent;
-              border-left-color: #0dc6ff;
-            }
-          }
         }
       }
     }

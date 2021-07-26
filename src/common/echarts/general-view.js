@@ -3,7 +3,7 @@ import echarts from 'echarts'
 export const setEchartOptions = (ref, options) => {
   echarts.init(ref).setOption(options)
 }
-// 运行事件-环形图
+// 饼图-综合概览-运行事件
 export const pieRunEvent = (ref, series) => {
   setEchartOptions(ref, {
     tooltip: {

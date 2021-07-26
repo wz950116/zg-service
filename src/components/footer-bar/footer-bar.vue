@@ -18,16 +18,16 @@ export default {
         path: 'business-guide'
       }, {
         name: '监督管理',
-        path: ''
+        path: 'supervision-management'
       }, {
         name: '综合评价',
-        path: ''
+        path: 'comprehensive-evaluation'
       }, {
         name: '公共服务',
         path: 'public-service'
       }, {
         name: '长三角一体化执法',
-        path: ''
+        path: 'integrated-law'
       }]
     }
   },

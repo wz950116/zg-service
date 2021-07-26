@@ -9,7 +9,7 @@
     </div>
     <div class="content">
       <!-- 公共停车专题 -->
-      <div v-if="activeName === '公共停车'" class="public-theme public-stop">
+      <div v-show="activeName === '公共停车'" class="public-theme public-stop">
         <div class="title-content">
           <h1>公共停车专题</h1>
           <div class="city-select">
@@ -47,8 +47,7 @@
             </div>
           </el-col>
           <el-col :span="12" class="right-content">
-            <el-progress type="dashboard" :percentage="78" color="#00CAB5" :width="110" :format="progressFormat"></el-progress>
-            <span class="unit">%</span>
+            <el-progress type="dashboard" :percentage="78" color="#00CAB5"></el-progress>
             <div class="info">
               <span>0</span>
               <span>泊位空/闲情况</span>
@@ -62,31 +61,37 @@
           <div ref="stopSortAnaysis" id="stop-sort-container"></div>
         </div>
         <!-- 停车热点区域 -->
-        <div class="stop-hot">
-          <h1 class="arrow-title">停车热点区域</h1>
-          <div class="tabs">
-            <div class="tab-item tab-item-active">近一周</div>
-            <div class="tab-item">近一月</div>
-            <div class="tab-item">近半年</div>
-          </div>
-          <div class="area-list">
-            <div class="area-list-th">
-              <div>区域名称</div>
-              <div>区域人口(千人)</div>
-              <div>泊位数量</div>
-              <div>泊位指数</div>
+        <el-row class="stop-hot">
+          <el-col :span="12">
+            <h1 class="arrow-title">停车热点区域</h1>
+          </el-col>
+          <el-col :span="12">
+            <div class="tabs">
+              <div class="tab-item tab-item-active">近一周</div>
+              <div class="tab-item">近一月</div>
+              <div class="tab-item">近半年</div>
             </div>
-            <div v-for="item in stopHotList" :key="item.name" class="area-list-tr">
-              <div class="active">{{ item.name }}</div>
-              <div>{{ item.peoples }}</div>
-              <div>{{ item.number }}</div>
-              <div>{{ item.points }}</div>
+          </el-col>
+          <el-col :span="24">
+            <div class="area-list">
+              <div class="area-list-th">
+                <div>区域名称</div>
+                <div>区域人口(千人)</div>
+                <div>泊位数量</div>
+                <div>泊位指数</div>
+              </div>
+              <div v-for="item in stopHotList" :key="item.name" class="area-list-tr">
+                <div class="active">{{ item.name }}</div>
+                <div>{{ item.peoples }}</div>
+                <div>{{ item.number }}</div>
+                <div>{{ item.points }}</div>
+              </div>
             </div>
-          </div>
-        </div>
+          </el-col>
+        </el-row>
       </div>
       <!-- 公共厕所专题 -->
-      <div v-if="activeName === '公共厕所'" class="public-theme public-toilet">
+      <div v-show="activeName === '公共厕所'" class="public-theme public-toilet">
         <div class="title-content">
           <h1>公共厕所专题</h1>
           <div class="city-select">
@@ -160,7 +165,7 @@
           <h1 class="arrow-title">公共厕所“五化”建设</h1>
           <div class="statistics">
             <div class="left-content">
-              <div class="icon">
+              <!-- <div class="icon">
                 <img src="../../common/image/public-service/icon-wuhua.png" width="44" height="44" alt="">
               </div>
               <div class="info">
@@ -169,7 +174,8 @@
                   <span class="number">1021</span>
                   <span class="unit">个</span>
                 </div>
-              </div>
+              </div> -->
+              <icon-info-show :item="{ icon: 'iconWuhua', name: '“五化”公共厕所数量', value: 1021, unit: '个', noExpand: true }"></icon-info-show>
             </div>
             <div class="right-content">
               <div class="hb">
@@ -281,7 +287,7 @@ import { stopSortAnaysis, toiletDeviceAnaysis, toiletBuildAnaysis } from '@/comm
 export default {
   data() {
     return {
-      activeName: '公共厕所',
+      activeName: '公共停车',
       map: null,
       showMapDialog: false,
       formData: {
@@ -391,22 +397,19 @@ export default {
       })
     },
     initCharts() {
-      // stopSortAnaysis(this.$refs.stopSortAnaysis)
-      toiletDeviceAnaysis(this.$refs.toiletDeviceAnaysis)
-      toiletBuildAnaysis(this.$refs.toiletBuildAnaysis)
-    },
-    progressFormat(percentage) {
-      return percentage
+      stopSortAnaysis(this.$refs.stopSortAnaysis)
     },
     tabClick(name) {
       if (this.activeName === name) return
       this.activeName = name
-      if (this.activeName === '公共停车') {
-        stopSortAnaysis(this.$refs.stopSortAnaysis)
-      } else if (this.activeName === '公共厕所') {
-        toiletDeviceAnaysis(this.$refs.toiletDeviceAnaysis)
-        toiletBuildAnaysis(this.$refs.toiletBuildAnaysis)
-      }
+      this.$nextTick(() => {
+        if (this.activeName === '公共停车') {
+          stopSortAnaysis(this.$refs.stopSortAnaysis)
+        } else if (this.activeName === '公共厕所') {
+          toiletDeviceAnaysis(this.$refs.toiletDeviceAnaysis)
+          toiletBuildAnaysis(this.$refs.toiletBuildAnaysis)
+        }
+      })
     }
   }
 }
@@ -474,16 +477,17 @@ export default {
     }
   }
   .public-theme {
-    margin-top: 107px;
-    margin-bottom: 100px;
     position: absolute;
     left: 30px;
     top: 0;
     width: 460px;
     height: 934px;
+    margin-top: 107px;
+    margin-bottom: 100px;
     padding: 15px 29px;
     background: url('../../common/image/public/bg-border_1.png') no-repeat center;
     background-size: cover;
+    overflow-y: auto;
     .title-content {
       display: flex;
       align-items: center;
@@ -616,15 +620,7 @@ export default {
     .right-content {
       position: relative;
       padding: 0 20px;
-      .unit {
-        position: absolute;
-        left: 110px;
-        top: 64px;
-        font-size: 20px;
-        font-family: Michroma, Michroma-Regular;
-        font-weight: 400;
-        color: #00cab5;
-      }
+      text-align: center;
       .info {
         display: flex;
         justify-content: space-between;
@@ -636,22 +632,21 @@ export default {
       }
     }
     .stop-sort {
-      margin-top: 30px;
+      margin-top: 25px;
       #stop-sort-container {
         width: 100%;
-        height: 300px;
+        height: 250px;
       }
     }
     .stop-hot {
-      display: flex;
-      flex-wrap: wrap;
       margin-top: 37px;
       h1 {
         font-size: 18px;
+        margin-top: 8px;
       }
       .tabs {
         display: flex;
-        margin-left: 74px;
+        width: 100%;
         cursor: pointer;
         .tab-item {
           width: 68px;
@@ -797,28 +792,9 @@ export default {
           display: flex;
           align-items: center;
           margin-right: 43px;
-          .icon {
-            margin-right: 12px;
-          }
-          .info {
-            font-size: 12px;
-            font-family: PingFangSC, PingFangSC-Regular;
-            font-weight: 400;
-            color: #ffffff;
-            line-height: 24px;
+          ::v-deep.icon-info-show {
             .name {
-              font-size: 14px;
-              color: #3a9eff;
-            }
-            .value {
-              font-size: 20px;
-              font-family: Michroma, Michroma-Regular;
-              margin-left: 8px;
-              .unit {
-                font-size: 12px;
-                font-family: PingFangSC, PingFangSC-Regular;
-                margin-left: 4px;
-              }
+              margin-left: -10px;
             }
           }
         }
@@ -998,7 +974,5 @@ export default {
   font-size: 32px !important;
   color: #00cab5 !important;
   font-family: Michroma, Michroma-Regular !important;
-  text-align: left !important;
-  text-indent: 26px !important;
 }
 </style>

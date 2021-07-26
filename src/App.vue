@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ home: $route.name === 'general-view' }">
     <!-- 共通头部 -->
     <header-bar></header-bar>
 
@@ -39,5 +39,9 @@ export default {
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
+}
+.home {
+  background: #000037 url('./common/image/general-view/bg.png') no-repeat center;
+  background-size: cover;
 }
 </style>

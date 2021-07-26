@@ -77,8 +77,8 @@ export const stopSortAnaysis = (ref) => {
 export const toiletDeviceAnaysis = (ref) => {
   setEchartOptions(ref, {
     grid: {
-      x: '12%', // x 偏移量
-      y: '15%' // y 偏移量
+      x: '12%',
+      y: '15%'
     },
     legend: {
       bottom: '5%',
@@ -296,8 +296,7 @@ export const toiletBuildAnaysis = (ref) => {
               offset: 0, color: '#009dff'
             }, {
               offset: 1, color: 'rgba(0, 157, 255, 0.00)'
-            }]
-            ),
+            }]),
             lineStyle: {
               color: '#009DFF'
             }
