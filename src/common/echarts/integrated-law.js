@@ -71,3 +71,52 @@ export const combineLawTrend = (ref) => {
     }]
   })
 }
+
+export const pieCommonCharts = (ref, { legendData, seriesData }) => {
+  setEchartOptions(ref, {
+    title: {
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: [{
+      data: legendData,
+      icon: 'circle',
+      bottom: '0',
+      itemGap: 16,
+      textStyle: {
+        color: 'rgba(255, 255, 255, 0.60)',
+        padding: [3, 0, 0, 0],
+        height: 24,
+        fontSize: 12
+      }
+    }],
+    series: [
+      {
+        name: '',
+        type: 'pie',
+        radius: '40%',
+        center: ['50%', '40%'],
+        data: seriesData,
+        labelLine: {
+          normal: {
+            lineStyle: {
+              color: 'rgba(255, 255, 255, 0.25)'
+            }
+          }
+        },
+        label: {
+          normal: {
+            textStyle: {
+              fontSize: 12,
+              fontFamily: 'Michroma, Michroma-Regular',
+              color: 'rgba(255, 255, 255, 0.90)'
+            },
+            formatter: '{d}%'
+          }
+        }
+      }
+    ]
+  })
+}

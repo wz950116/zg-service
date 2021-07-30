@@ -1,6 +1,6 @@
 <template>
   <div class="supervision-management">
-    <div ref="map" id="map-container"></div>
+    <div ref="map" id="map-container" v-show="(isCity && activeViewModel === 'event') || (!isCity && graphActive === 'internet')"></div>
     <div class="left-content">
       <div class="city-running">
         <h1>城市运行</h1>
@@ -49,20 +49,28 @@
         </div>
       </div>
     </div>
-    <div class="center-content">
-      <div class="arrow-left"></div>
+    <div :class="['center-content', { 'is-city': isCity }]">
+      <div ref="provinceHotMap" id="province-hot-map" v-show="!isCity && graphActive === 'general'"></div>
+      <div ref="cityHotMap" id="city-hot-map" v-show="isCity && activeViewModel === 'grid'"></div>
       <div class="statistics">
         <icon-info-show class="item" v-for="item in generalData" :key="item.name" :item="item"></icon-info-show>
       </div>
-      <div class="city-list">
-        <div v-for="item in cityList" :key="item" :class="['city-item', { active: item === '杭州市' }]">{{ item }}</div>
+      <div class="arrow-left" v-show="isCity" @click="onBack"></div>
+      <div class="city-list" v-show="isCity">
+        <div v-for="item in cityList" :key="item" :class="['city-item', { active: item === activeCity }]" @click="cityChange(item)">{{ item }}</div>
       </div>
-      <div class="center-tabs">
-        <div class="tab-item active">综合概况</div>
-        <div class="tab-item">联网运行</div>
+      <div class="legend" v-show="isCity && activeViewModel === 'grid'">
+        <div class="level-1">优秀</div>
+        <div class="level-2">良好</div>
+        <div class="level-3">合格</div>
+        <div class="level-4">不合格</div>
+      </div>
+      <div class="center-tabs" v-show="!isCity">
+        <div :class="['tab-item', { active: graphActive === 'general' }]" @click="graphChange('general')">综合概况</div>
+        <div :class="['tab-item', { active: graphActive === 'internet' }]" @click="graphChange('internet')">联网运行</div>
       </div>
     </div>
-    <div class="right-content" v-show="false">
+    <div class="right-content" v-show="!isCity">
       <div class="supervision-check">
         <h1>监督检查</h1>
         <div class="track-supervision">
@@ -105,52 +113,55 @@
         </div>
       </div>
     </div>
-    <div class="right-tabs">
-      <div class="tab-item">事件视图</div>
-      <div class="tab-item active">网格视图</div>
+    <div class="right-tabs" v-show="isCity">
+      <div :class="['tab-item', { active: activeViewModel === 'event' }]" @click="viewModelChange('event')">事件视图</div>
+      <div :class="['tab-item', { active: activeViewModel === 'grid' }]" @click="viewModelChange('grid')">网格视图</div>
     </div>
-    <el-tree
-      class="tree"
-      :data="treeData"
-      show-checkbox
-      node-key="id"
-      icon-class="empty"
-      :default-expanded-keys="[1]"
-      :default-checked-keys="[2, 3]"
-      :props="defaultProps">
-    </el-tree>
+    <el-tree v-show="isCity && activeViewModel === 'event'" class="tree" :data="treeData" show-checkbox node-key="id" icon-class="empty" :default-expanded-keys="[1]" :default-checked-keys="[2, 3]" :props="defaultProps"> </el-tree>
   </div>
 </template>
 
 <script>
 import { MapContainer } from '@/common/js/amap'
-import { eventRunningAnaysis, rubbishStackingAnaysis } from '@/common/echarts/supervision-management'
+import { eventRunningAnaysis, rubbishStackingAnaysis, provinceMapCharts, cityMapCharts } from '@/common/echarts/supervision-management'
 export default {
   data() {
     return {
       map: null,
+      isCity: false,
+      activeCity: '',
+      activeViewModel: 'grid',
+      graphActive: 'general',
       defaultProps: {
         children: 'children',
         label: 'label'
       },
-      treeData: [{
-        id: 1,
-        label: '事件',
-        children: [{
-          id: 3,
-          label: '未处理'
-        }, {
-          id: 4,
-          label: '已处理'
-        }]
-      }, {
-        id: 2,
-        label: '视频监控',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }]
-      }],
+      treeData: [
+        {
+          id: 1,
+          label: '事件',
+          children: [
+            {
+              id: 3,
+              label: '未处理'
+            },
+            {
+              id: 4,
+              label: '已处理'
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: '视频监控',
+          children: [
+            {
+              id: 5,
+              label: '二级 2-1'
+            }
+          ]
+        }
+      ],
       list: [
         {
           name: '近代史缩影——清河坊历史街区'
@@ -281,24 +292,54 @@ export default {
         closeInfoWindowCallback: () => {},
         clickHook: () => {}
       })
-      this.map.addPoints('iconEvent', [{
-        lon: 120.14507,
-        lat: 30.264084
-      }, {
-        lon: 120.26507,
-        lat: 30.206084
-      }, {
-        lon: 120.24507,
-        lat: 30.375084
-      }])
-      this.map.addPoints('iconMonitor', [{
-        lon: 120.15507,
-        lat: 30.284084
-      }])
+      this.map.addPoints('iconEvent', [
+        {
+          lon: 120.14507,
+          lat: 30.264084
+        },
+        {
+          lon: 120.26507,
+          lat: 30.206084
+        },
+        {
+          lon: 120.24507,
+          lat: 30.375084
+        }
+      ])
+      this.map.addPoints('iconMonitor', [
+        {
+          lon: 120.15507,
+          lat: 30.284084
+        }
+      ])
     },
     initCharts() {
       eventRunningAnaysis(this.$refs.eventRunning)
       rubbishStackingAnaysis(this.$refs.rubbishStacking)
+      provinceMapCharts(this.$refs.provinceHotMap, params => {
+        this.isCity = true
+        this.activeCity = params.name
+        this.$nextTick(() => {
+          cityMapCharts(this.$refs.cityHotMap, params.name)
+        })
+      })
+    },
+    cityChange(name) {
+      this.activeCity = name
+      this.$nextTick(() => {
+        cityMapCharts(this.$refs.cityHotMap, name)
+      })
+    },
+    viewModelChange(name) {
+      this.activeViewModel = name
+    },
+    graphChange(name) {
+      this.graphActive = name
+    },
+    onBack() {
+      this.isCity = false
+      this.activeViewModel = 'grid'
+      this.graphActive = 'general'
     }
   }
 }
@@ -470,6 +511,7 @@ export default {
     top: 107px;
     left: 490px;
     right: 490px;
+    height: 934px;
     margin-bottom: 100px;
     .arrow-left {
       position: absolute;
@@ -482,11 +524,14 @@ export default {
       cursor: pointer;
     }
     .statistics {
+      position: absolute;
+      top: 0;
+      left: 0;
       display: flex;
       justify-content: space-around;
       margin-left: 10px;
       .icon-info-show {
-        width: 25%;
+        width: 234px;
         padding-left: 65px;
         ::v-deep.value {
           color: #fdad43;
@@ -498,9 +543,9 @@ export default {
       left: 20px;
       top: 100px;
       width: 140px;
-      background: rgba(0,29,57,0.89);
+      background: rgba(0, 29, 57, 0.89);
       border: 1px solid;
-      border-image: linear-gradient(180deg, rgba(58,158,255,0.00) 0%, #3a9eff 50%, rgba(58,158,255,0.00) 100%) 1 1;
+      border-image: linear-gradient(180deg, rgba(58, 158, 255, 0) 0%, #3a9eff 50%, rgba(58, 158, 255, 0) 100%) 1 1;
       .city-item {
         height: 49px;
         line-height: 49px;
@@ -527,6 +572,40 @@ export default {
       left: 40px;
       bottom: 142px;
       display: flex;
+    }
+    #province-hot-map, #city-hot-map {
+      width: 100%;
+      height: 854px;
+    }
+    .legend {
+      position: absolute;
+      right: 40px;
+      bottom: 100px;
+      color: #ffffff;
+      font-size: 14px;
+      div {
+        margin-bottom: 16px;
+        &::before {
+          display: inline-block;
+          content: '';
+          width: 18px;
+          height: 12px;
+          background: #11c372;
+          margin-right: 7px;
+        }
+        &.level-2::before {
+          background: #009DFF;
+        }
+        &.level-3::before {
+          background: #FDAD43;
+        }
+        &.level-4::before {
+          background: #FF4F5C;
+        }
+      }
+    }
+    &.is-city {
+      right: 0;
     }
   }
   .right-content {
@@ -684,7 +763,7 @@ export default {
     background: transparent !important;
   }
   ::v-deep .el-checkbox__input .el-checkbox__inner {
-    background: rgba(0, 29, 57, 0.60);
+    background: rgba(0, 29, 57, 0.6);
     border: 1px solid #004384;
   }
   ::v-deep .is-checked .el-checkbox__inner {
