@@ -2,15 +2,91 @@ import echarts from 'echarts'
 const path = require('path')
 const req = require.context('@/common/json', true, /\.json$/)
 const cityMap = req.keys().map(key => path.basename(key, '.json'))
+
+const linesData = {
+  saddr: {
+    name: '省中心',
+    fromCoord: [120.141079, 30.26705]
+  },
+  eaddr: [
+    {
+      name: '湖州',
+      value: '1200000',
+      toCoord: [120.086823, 30.894348]
+    },
+    {
+      name: '嘉兴',
+      value: '12000',
+      toCoord: [120.755486, 30.746129]
+    },
+    {
+      name: '舟山',
+      value: '1448200',
+      toCoord: [122.207215, 29.985295]
+    },
+    {
+      name: '宁波',
+      value: '2400000',
+      toCoord: [121.550357, 29.874556]
+    },
+    {
+      name: '绍兴',
+      value: '1206000',
+      toCoord: [120.580232, 30.029752]
+    },
+    {
+      name: '台州',
+      value: '1206000',
+      toCoord: [121.420757, 28.656386]
+    },
+    {
+      name: '温州',
+      value: '1206000',
+      toCoord: [120.699366, 27.994267]
+    },
+    {
+      name: '丽水',
+      value: '1206000',
+      toCoord: [119.922796, 28.46763]
+    },
+    {
+      name: '金华',
+      value: '1206000',
+      toCoord: [119.647444, 29.079059]
+    },
+    {
+      name: '衢州',
+      value: '1206000',
+      toCoord: [118.859457, 28.970079]
+    }
+  ]
+}
+
+var convertData = function (data) {
+  var res = []
+  const { saddr, eaddr } = data
+  for (var i = 0; i < eaddr.length; i++) {
+    var dataItem = eaddr[i]
+    res.push({
+      fromName: saddr.name,
+      toName: dataItem.name,
+      coords: [saddr.fromCoord, dataItem.toCoord],
+      value: dataItem.value
+    })
+  }
+  return res
+}
+// ECharts Option配置
 // 初始化图表
 export const setEchartOptions = (ref, options, callback) => {
   const myChart = echarts.init(ref)
   myChart.setOption(options)
   if (callback) {
-    myChart.on('click', function(params) {
+    myChart.on('click', function (params) {
       callback(params)
     })
   }
+  window.addEventListener('resize', () => { myChart.resize() })
 }
 
 // 柱状图-监督管理-各地市事件运行情况
@@ -203,9 +279,11 @@ export const provinceMapCharts = (ref, callback) => {
   setEchartOptions(ref, {
     series: [
       {
+        name: '浙江',
         type: 'map',
         map: '浙江',
         top: 50,
+        showLegendSymbol: false,
         label: {
           normal: {
             show: true,
@@ -222,44 +300,44 @@ export const provinceMapCharts = (ref, callback) => {
         },
         itemStyle: {
           normal: {
-            borderColor: 'white'
+            borderColor: 'white',
+            opacity: 0.8
           },
           emphasis: {
             borderColor: 'white',
-            areaColor: '#ffdead'
+            borderWidth: 3
           }
         },
         data: [
-          { name: '杭州市', selected: false, value: 1 },
-          { name: '湖州市', selected: false, value: 2 },
-          { name: '嘉兴市', selected: false, value: 3 },
-          { name: '宁波市', selected: false, value: 4 },
-          { name: '台州市', selected: false, value: 5 },
-          { name: '温州市', selected: false, value: 6 },
-          { name: '丽水市', selected: false, value: 7 },
-          { name: '衢州市', selected: false, value: 8 },
-          { name: '金华市', selected: false, value: 9 },
-          { name: '绍兴市', selected: false, value: 10 },
-          { name: '舟山市', selected: false, value: 11 }
+          { name: '杭州市', selected: false, value: 100 },
+          { name: '湖州市', selected: false, value: 100 },
+          { name: '嘉兴市', selected: false, value: 40 },
+          { name: '宁波市', selected: false, value: 60 },
+          { name: '台州市', selected: false, value: 100 },
+          { name: '温州市', selected: false, value: 80 },
+          { name: '丽水市', selected: false, value: 60 },
+          { name: '衢州市', selected: false, value: 40 },
+          { name: '金华市', selected: false, value: 80 },
+          { name: '绍兴市', selected: false, value: 40 },
+          { name: '舟山市', selected: false, value: 80 }
         ]
       }
     ],
     dataRange: {
-      x: '-1000 px', // 图例横轴位置
-      y: '-1000 px', // 图例纵轴位置
+      x: 'right',
+      y: 'bottom',
+      align: 'left',
+      padding: [0, 70, 0, 0],
+      textStyle: {
+        color: 'white'
+      },
       splitList: [
-        { start: 1, end: 1, label: '杭州市', color: '#11C372' },
-        { start: 2, end: 2, label: '湖州市', color: '#11C372' },
-        { start: 3, end: 3, label: '嘉兴市', color: '#FF4F5C' },
-        { start: 4, end: 4, label: '宁波市', color: '#FDAD43' },
-        { start: 5, end: 5, label: '台州市', color: '#11C372' },
-        { start: 6, end: 6, label: '温州市', color: '#009DFF' },
-        { start: 7, end: 7, label: '丽水市', color: '#FDAD43' },
-        { start: 8, end: 8, label: '衢州市', color: '#FF4F5C' },
-        { start: 9, end: 9, label: '金华市', color: '#009DFF' },
-        { start: 10, end: 10, label: '绍兴市', color: '#FF4F5C' },
-        { start: 11, end: 11, label: '舟山市', color: '#009DFF' }
-      ]
+        { start: 0, end: 59, label: '不合格' },
+        { start: 60, end: 79, label: '合格' },
+        { start: 80, end: 89, label: '良好' },
+        { start: 90, end: 100, label: '优秀' }
+      ],
+      color: ['#11C372', '#009DFF', '#FDAD43', '#FF4F5C']
     }
   }, callback)
 }
@@ -298,48 +376,156 @@ export const cityMapCharts = (ref, name) => {
         itemStyle: {
           normal: {
             borderColor: 'white',
-            areaColor: '#11C372'
+            opacity: 0.8
           },
           emphasis: {
             borderColor: 'white',
-            areaColor: '#ffdead'
+            borderWidth: 3
           }
         },
         data: [
-          { name: '淳安县', selected: false, value: 1 },
-          { name: '建德市', selected: false, value: 2 },
-          { name: '桐庐县', selected: false, value: 3 },
-          { name: '富阳区', selected: false, value: 4 },
-          { name: '萧山区', selected: false, value: 5 },
-          { name: '钱塘区', selected: false, value: 6 },
-          { name: '临平区', selected: false, value: 7 },
-          { name: '余杭区', selected: false, value: 8 },
-          { name: '临安区', selected: false, value: 9 },
-          { name: '西湖区', selected: false, value: 10 },
-          { name: '滨江区', selected: false, value: 11 },
-          { name: '上城区', selected: false, value: 12 },
-          { name: '拱墅区', selected: false, value: 13 }
+          { name: '淳安县', selected: false, value: 80 },
+          { name: '建德市', selected: false, value: 100 },
+          { name: '桐庐县', selected: false, value: 20 },
+          { name: '富阳区', selected: false, value: 60 },
+          { name: '萧山区', selected: false, value: 100 },
+          { name: '钱塘区', selected: false, value: 100 },
+          { name: '临平区', selected: false, value: 20 },
+          { name: '余杭区', selected: false, value: 100 },
+          { name: '临安区', selected: false, value: 80 },
+          { name: '西湖区', selected: false, value: 20 },
+          { name: '滨江区', selected: false, value: 80 },
+          { name: '上城区', selected: false, value: 60 },
+          { name: '拱墅区', selected: false, value: 80 }
         ]
       }
     ],
     dataRange: {
-      x: '-1000 px', // 图例横轴位置
-      y: '-1000 px', // 图例纵轴位置
+      x: 'right',
+      y: 'bottom',
+      align: 'left',
+      padding: [0, 70, 0, 0],
+      textStyle: {
+        color: 'white'
+      },
       splitList: [
-        { start: 1, end: 1, label: '淳安县', color: '#009DFF' },
-        { start: 2, end: 2, label: '建德市', color: '#11C372' },
-        { start: 3, end: 3, label: '桐庐县', color: '#FF4F5C' },
-        { start: 4, end: 4, label: '富阳区', color: '#FDAD43' },
-        { start: 5, end: 5, label: '萧山区', color: '#11C372' },
-        { start: 6, end: 6, label: '温州市', color: '#11C372' },
-        { start: 7, end: 7, label: '临平区', color: '#FF4F5C' },
-        { start: 8, end: 8, label: '余杭区', color: '#11C372' },
-        { start: 9, end: 9, label: '临安区', color: '#009DFF' },
-        { start: 10, end: 10, label: '西湖区', color: '#FF4F5C' },
-        { start: 11, end: 11, label: '滨江区', color: '#009DFF' },
-        { start: 12, end: 12, label: '上城区', color: '#FDAD43' },
-        { start: 13, end: 13, label: '拱墅区', color: '#009DFF' }
-      ]
+        { start: 0, end: 59, label: '不合格' },
+        { start: 60, end: 79, label: '合格' },
+        { start: 80, end: 89, label: '良好' },
+        { start: 90, end: 100, label: '优秀' }
+      ],
+      color: ['#11C372', '#009DFF', '#FDAD43', '#FF4F5C']
     }
+  })
+}
+
+// 地图-监督管理-飞线
+export const flyLineCharts = (ref) => {
+  setEchartOptions(ref, {
+    // 加载 amap 组件
+    amap: {
+      center: [120.141079, 30.26705],
+      resizeEnable: true,
+      mapStyle: 'amap://styles/36fa8614fd5a353872b1c2d503e006c2',
+      rotation: 10,
+      zoom: 8, // 缩放
+      viewMode: '3D', // 是否启用3d地图
+      pitch: 35, // 视角高度
+      skyColor: '#33216a'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      // 路线
+      {
+        type: 'lines',
+        zlevel: 2,
+        coordinateSystem: 'amap',
+        lineStyle: {
+          normal: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0, color: '#47b3fe'
+            }, {
+              offset: 0.3, color: '#25a4ff'
+            }, {
+              offset: 0.8, color: '#25a4ff'
+            }, {
+              offset: 1, color: '#d8f4fc'
+            }]),
+            width: 2, // 尾迹线条宽度
+            opacity: 1, // 尾迹线条透明度
+            curveness: -0.3 // 尾迹线条曲直度
+          }
+        },
+        data: convertData(linesData)
+      },
+      // 终点
+      {
+        type: 'effectScatter',
+        coordinateSystem: 'amap',
+        zlevel: 2,
+        rippleEffect: {
+          brushType: 'stroke'
+        },
+        label: {
+          normal: {
+            show: true,
+            position: 'bottom',
+            formatter: '{b}',
+            fontSize: 20,
+            textStyle: {
+              color: 'white'
+            }
+          }
+        },
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0, color: '#d8f4fc'
+          }, {
+            offset: 0.89, color: '#25a4ff'
+          }])
+        },
+        data: linesData.eaddr.map(function (dataItem) {
+          return {
+            name: dataItem.name,
+            value: dataItem.toCoord.concat([dataItem.value])
+          }
+        })
+      },
+      // 起点
+      {
+        type: 'scatter',
+        coordinateSystem: 'amap',
+        zlevel: 3,
+        rippleEffect: {
+          brushType: 'stroke'
+        },
+        label: {
+          normal: {
+            show: true,
+            position: 'bottom',
+            formatter: '{b}',
+            fontSize: 20,
+            textStyle: {
+              color: 'white'
+            }
+          }
+        },
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0, color: '#d8f4fc'
+          }, {
+            offset: 0.89, color: '#25a4ff'
+          }])
+        },
+        data: [
+          {
+            name: linesData.saddr.name,
+            value: linesData.saddr.fromCoord
+          }
+        ]
+      }
+    ]
   })
 }

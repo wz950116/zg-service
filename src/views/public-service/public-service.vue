@@ -165,16 +165,6 @@
           <h1 class="arrow-title">公共厕所“五化”建设</h1>
           <div class="statistics">
             <div class="left-content">
-              <!-- <div class="icon">
-                <img src="../../common/image/public-service/icon-wuhua.png" width="44" height="44" alt="">
-              </div>
-              <div class="info">
-                <div class="name">“五化”公共厕所数量</div>
-                <div class="value">
-                  <span class="number">1021</span>
-                  <span class="unit">个</span>
-                </div>
-              </div> -->
               <icon-info-show :item="{ icon: 'iconWuhua', name: '“五化”公共厕所数量', value: 1021, unit: '个', noExpand: true }"></icon-info-show>
             </div>
             <div class="right-content">

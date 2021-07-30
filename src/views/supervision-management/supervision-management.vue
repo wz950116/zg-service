@@ -1,6 +1,7 @@
 <template>
   <div class="supervision-management">
-    <div ref="map" id="map-container" v-show="(isCity && activeViewModel === 'event') || (!isCity && graphActive === 'internet')"></div>
+    <div ref="map" id="map-container" v-show="isCity && activeViewModel === 'event'"></div>
+    <div ref="internetRunning" id="map-container" v-show="!isCity && graphActive === 'internet'"></div>
     <div class="left-content">
       <div class="city-running">
         <h1>城市运行</h1>
@@ -58,12 +59,6 @@
       <div class="arrow-left" v-show="isCity" @click="onBack"></div>
       <div class="city-list" v-show="isCity">
         <div v-for="item in cityList" :key="item" :class="['city-item', { active: item === activeCity }]" @click="cityChange(item)">{{ item }}</div>
-      </div>
-      <div class="legend" v-show="isCity && activeViewModel === 'grid'">
-        <div class="level-1">优秀</div>
-        <div class="level-2">良好</div>
-        <div class="level-3">合格</div>
-        <div class="level-4">不合格</div>
       </div>
       <div class="center-tabs" v-show="!isCity">
         <div :class="['tab-item', { active: graphActive === 'general' }]" @click="graphChange('general')">综合概况</div>
@@ -123,7 +118,7 @@
 
 <script>
 import { MapContainer } from '@/common/js/amap'
-import { eventRunningAnaysis, rubbishStackingAnaysis, provinceMapCharts, cityMapCharts } from '@/common/echarts/supervision-management'
+import { eventRunningAnaysis, rubbishStackingAnaysis, provinceMapCharts, cityMapCharts, flyLineCharts } from '@/common/echarts/supervision-management'
 export default {
   data() {
     return {
@@ -323,6 +318,7 @@ export default {
           cityMapCharts(this.$refs.cityHotMap, params.name)
         })
       })
+      flyLineCharts(this.$refs.internetRunning)
     },
     cityChange(name) {
       this.activeCity = name
@@ -346,6 +342,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#echarts-amap {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
 .supervision-management {
   position: relative;
   #map-container {
@@ -576,33 +577,6 @@ export default {
     #province-hot-map, #city-hot-map {
       width: 100%;
       height: 854px;
-    }
-    .legend {
-      position: absolute;
-      right: 40px;
-      bottom: 100px;
-      color: #ffffff;
-      font-size: 14px;
-      div {
-        margin-bottom: 16px;
-        &::before {
-          display: inline-block;
-          content: '';
-          width: 18px;
-          height: 12px;
-          background: #11c372;
-          margin-right: 7px;
-        }
-        &.level-2::before {
-          background: #009DFF;
-        }
-        &.level-3::before {
-          background: #FDAD43;
-        }
-        &.level-4::before {
-          background: #FF4F5C;
-        }
-      }
     }
     &.is-city {
       right: 0;

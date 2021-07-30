@@ -271,7 +271,6 @@ export class MapContainer extends BaseMap {
     })
     return {
       startAnimation() {
-        console.log(track, 111)
         marker.moveAlong(track, 200)
       },
       pauseAnimation() {

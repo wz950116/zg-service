@@ -34,7 +34,9 @@
       </div>
     </div>
     <div class="center-content">
-      <div class="arrow-left"></div>
+      <div ref="provinceHotMap" id="province-hot-map" v-show="!isCity"></div>
+      <div ref="cityHotMap" id="city-hot-map" v-show="isCity"></div>
+      <div class="arrow-left" v-show="isCity" @click="isCity = false"></div>
     </div>
     <div class="right-content">
       <div class="neat">
@@ -74,10 +76,12 @@
 
 <script>
 import { categoryAnaysis, yCategoryAnaysis } from '@/common/echarts/comprehensive-evaluation'
+import { provinceMapCharts, cityMapCharts } from '@/common/echarts/supervision-management'
 export default {
   data() {
     return {
-
+      isCity: false,
+      activeCity: ''
     }
   },
   mounted() {
@@ -116,6 +120,13 @@ export default {
         data: [100, 89, 93, 90, 88]
       })
       yCategoryAnaysis(this.$refs.neatMangementAnaysis)
+      provinceMapCharts(this.$refs.provinceHotMap, params => {
+        this.isCity = true
+        this.activeCity = params.name
+        this.$nextTick(() => {
+          cityMapCharts(this.$refs.cityHotMap, params.name)
+        })
+      })
     }
   }
 }
@@ -236,6 +247,10 @@ export default {
       background: url('../../common/image/supervision-management/back.png') no-repeat center;
       background-size: cover;
       cursor: pointer;
+    }
+    #province-hot-map, #city-hot-map {
+      width: 100%;
+      height: 854px;
     }
   }
   .right-content {
